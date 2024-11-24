@@ -1,0 +1,11 @@
+sudo apt update && sudo apt -y install gperf gcc-multilib gcc-10-multilib g++-multilib g++-10-multilib libc6-dev lib32ncurses5-dev x11proto-core-dev libx11-dev tree lib32z-dev libgl1-mesa-dev libxml2-utils xsltproc bc ccache lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libwxgtk3.0-gtk3-dev libxml2 lzop pngcrush schedtool squashfs-tools imagemagick libbz2-dev lzma ncftp qemu-user-static libstdc++-10-dev libtinfo5 libgflags-dev libncurses5 python3 repo
+sudo apt -y install rsync
+mkdir -p ~/twrp && cd ~/twrp
+repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1 && repo sync
+git clone https://github.com/scropoolISreal/recovery_device_samsung_a24.git device/samsung/a24
+. build/envsetup.sh
+lunch twrp_a24-eng
+make recoveryimage
+cd out/target/product/a24
+tar -cf - recovery.img | tee recovery.tar | md5sum -t >> recovery.tar && mv recovery.tar recovery.tar.md5
+curl -T "recovery.tar.md5" -u :8ecb3994-29c0-4495-b8f9-ea7bbbdb6ffb https://pixeldrain.com/api/file/
